@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div>
+        <p style="text-align: right">
+            <a href="/tour/new">여행지 등록</a>
+        </p>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>여행지명</th>
+                <th>주소</th>
+                <th>한줄설명</th>
+                <th>상세설명</th>
+                <th>작성자</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tour, num : ${tourList}">
+                <td th:text="${num.count}"></td>
+                <td th:text="${tour.name}"></td>
+                <td th:text="|${tour.address.city} ${tour.address.street} ${tour.address.buildingNo}|"></td>
+                <td th:text="${tour.onelineDesc}"></td>
+                <td th:text="${tour.mainDesc}"></td>
+                <td th:text="${tour.user.userid}"></td>
+                <td th:if="${tour.user.idx == useridx}">
+                    <a href="#" th:href="@{/tour/edit/{idx} (idx=${tour.idx})}"
+                       class="btn btn-primary" role="button">수정</a>
+                    <a href="#" th:href="'javascript:del(' + ${tour.idx} + ')'"
+                       class="btn btn-primary" role="button">삭제</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div> <!-- /container -->
+</body>
+<script>
+    function del(idx) {
+        if(confirm("정말 삭제하시겠습니까?") != true) {
+            return;
+        }
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/tour/delete/" + idx);
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <h1>마이페이지</h1>
+    <form role="form" th:object="${editUserForm}" method="post">
+        <div class="form-group">
+            <label th:for="username">이 름</label>
+            <input type="text" th:field="*{username}" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label th:for="userid">아이디</label>
+            <input type="text" th:field="*{userid}" class="form-control" placeholder="아이디를 입력하세요"
+                   th:class="${#fields.hasErrors('userid')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('userid')}" th:errors="*{userid}" class="alert alert-danger">
+                Incorrect date
+            </p>
+        </div>
+        <div class="form-group">
+            <label th:for="userpw">PASSWORD</label>
+            <input type="password" th:field="*{userpw}" class="form-control" placeholder="패스워드를 입력하세요"
+                   th:class="${#fields.hasErrors('userpw')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('userpw')}" th:errors="*{userpw}" class="alert alert-danger">
+                Incorrect date
+            </p>
+        </div>
+        <div class="form-group">
+            <label th:for="username">E-Mail</label>
+            <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요">
+        </div>
+        <div class="form-group">
+            <input th:type="hidden" id="role" name="role" th:value="user">
+        </div>
+        <button type="submit" class="btn btn-primary">수정</button>
+        <button type="button" class="btn btn-primary"
+                th:onclick="'javascript:withdraw();'">탈퇴</button>
+    </form>
+    <br/>
+</div> <!-- /container -->
+</body>
+<script>
+    function withdraw() {
+        if(confirm("정말 탈퇴하시겠습니까?") != true) {
+            return;
+        }
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/user/withdraw");
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/header :: header">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div class="jumbotron">
+        <h1>여행기</h1>
+        <p class="lead">회원 기능</p>
+        <p>
+            <a sec:authorize="!isAuthenticated()"
+               class="btn btn-lg btn-secondary" href="/login">로그인</a>
+            <a sec:authorize="!isAuthenticated()"
+               class="btn btn-lg btn-secondary" href="/join">회원 가입</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')"
+               class="btn btn-lg btn-secondary" href="/admin/all">회원 목록</a>
+            <a sec:authorize="hasRole('ROLE_USER')"
+               class="btn btn-lg btn-secondary" href="/user/myPage">마이페이지</a>
+            <a sec:authorize="isAuthenticated()"
+               class="btn btn-lg btn-secondary" href="/logout">로그아웃</a>
+        </p>
+        <div sec:authorize="isAuthenticated()">
+            <p class="lead">여행지 기능</p>
+            <p>
+                <a class="btn btn-lg btn-dark" href="/tour/new">여행지 등록</a>
+                <a class="btn btn-lg btn-dark" href="/tour/all">여행지 목록</a>
+            </p>
+        </div>
+    </div>
+    <!--    <div th:replace="fragments/footer :: footer" />-->
+</div> <!-- /container -->

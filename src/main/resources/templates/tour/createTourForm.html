@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+
+    #fullAddr {
+        display: flex;
+    }
+</style>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <form th:object="${tourForm}" method="post">
+        <div class="form-group">
+            <label th:for="name">여행지명</label>
+            <input type="text" th:field="*{name}" class="form-control"
+                   placeholder="여행지명을 입력하세요"
+                   th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: #bd2130">Incorrect date</p>
+        </div>
+        <div id="fullAddr">
+            <div class="form-group">
+                <label th:for="city">주소</label>
+                <input type="text" th:field="*{city}" class="form-control"
+                       placeholder="도·시·구·동"
+                       th:class="${#fields.hasErrors('city')}? 'form-control fieldError' : 'form-control'">
+                <p th:if="${#fields.hasErrors('city')}" th:errors="*{city}" style="color: #bd2130">Incorrect date</p>
+            </div>
+            <div class="form-group">
+                <label th:for="street">도로명</label>
+                <input type="text" th:field="*{street}" class="form-control"
+                       placeholder="도로명"
+                       th:class="${#fields.hasErrors('street')}? 'form-control fieldError' : 'form-control'">
+                <p th:if="${#fields.hasErrors('street')}" th:errors="*{street}" style="color: #bd2130">Incorrect date</p>
+            </div>
+            <div class="form-group">
+                <label th:for="author">건물번호</label>
+                <input type="text" th:field="*{buildingNo}" class="form-control"
+                       placeholder="건물번호"
+                       th:class="${#fields.hasErrors('buildingNo')}? 'form-control fieldError' : 'form-control'">
+                <p th:if="${#fields.hasErrors('buildingNo')}" th:errors="*{buildingNo}" style="color: #bd2130">Incorrect date</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label th:for="onelineDesc">한줄설명</label>
+            <input type="text" th:field="*{onelineDesc}" class="form-control"
+                   placeholder="한줄설명을 작성하세요"
+                   th:class="${#fields.hasErrors('onelineDesc')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('onelineDesc')}" th:errors="*{onelineDesc}" style="color: #bd2130">Incorrect date</p>
+        </div>
+        <div class="form-group">
+            <label th:for="mainDesc">상세설명</label>
+            <textarea th:field="*{mainDesc}" class="form-control"
+                      placeholder="상세설명을 작성하세요"
+                      th:class="${#fields.hasErrors('mainDesc')}? 'form-control fieldError' : 'form-control'"></textarea>
+            <p th:if="${#fields.hasErrors('mainDesc')}" th:errors="*{mainDesc}" style="color: #bd2130">Incorrect date</p>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br/>
+</div>
+</body>
+</html>
