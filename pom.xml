@@ -76,6 +76,7 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -85,6 +86,12 @@
 			<artifactId>spring-security-test</artifactId>
 			<version>${spring-security.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- oauth2.0 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
 
 	</dependencies>

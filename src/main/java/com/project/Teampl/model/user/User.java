@@ -3,6 +3,7 @@ package com.project.Teampl.model.user;
 import com.project.Teampl.dto.user.EditUserForm;
 import com.project.Teampl.dto.user.JoinForm;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -24,6 +26,9 @@ public class User {
     private String userid;
     private String userpw;
     private String email;
+
+    private String provider;    // oauth 구분을 위한 google, facebook, kakao 등등
+    private String providerId;  // 소셜 로그인(oauth)의 토큰 정보로부터 가져온 고유 아이디
     private String role;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime regdate;

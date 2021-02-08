@@ -8,7 +8,9 @@ import com.project.Teampl.service.TourService;
 import com.project.Teampl.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,14 +51,17 @@ public class TourController {
     }
 
     @GetMapping("/tour/all")
-    public String tourList(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String useridx = authentication.getName();
+    public String tourList(Model model, Authentication authentication,
+                           @AuthenticationPrincipal UserDetails userDetails) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String useridx = authentication.getName();
+        userDetails = (UserDetails) authentication.getPrincipal();
 
         List<Tour> tourList = tourService.findAll();
-        User findUser = userService.findById(Long.parseLong(useridx));
+//        User findUser = userService.findById(Long.parseLong(useridx));
         model.addAttribute("tourList", tourList);
-        model.addAttribute("useridx", findUser.getIdx());
+        model.addAttribute("useridx", userDetails.getUsername());
+//        model.addAttribute("useridx", findUser.getIdx());
 
         return "tour/tourList";
     }

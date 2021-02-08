@@ -1,5 +1,6 @@
 package com.project.Teampl.controller;
 
+import com.project.Teampl.config.auth.PrincipalDetails;
 import com.project.Teampl.dto.user.EditUserForm;
 import com.project.Teampl.dto.user.JoinForm;
 import com.project.Teampl.dto.user.LoginForm;
@@ -8,7 +9,10 @@ import com.project.Teampl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +30,39 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    //일반 회원 세션 정보 확인
+    @GetMapping("/test/login")
+    public @ResponseBody String testLogin(Authentication authentication,
+                                          @AuthenticationPrincipal PrincipalDetails userDetails) {
+        System.out.println("================ /test/login =================");
+//        System.out.println("authentication : " + authentication.getPrincipal()); // 암호화 된 패스워드를 제공하지 않는 특징이 있음
+
+        userDetails = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("authentication : " + userDetails.getUser());
+
+        return userDetails.getUser().toString();
+    }
+
+    // Oauth 계정 세션 정보 확인
+    @GetMapping("/test/oauth/login")
+    public @ResponseBody String testOauthLogin(Authentication authentication,
+                                               @AuthenticationPrincipal OAuth2User oauth) {
+        System.out.println("================ /test/oauth/login =================");
+
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        System.out.println("authentication : " + oAuth2User.getAttributes());
+        System.out.println("oauth2User : " + oauth.getAttributes());
+
+        return oAuth2User.getAttributes().toString();
+    }
+
+    // 일반, OAuth 계정으로 로그인하면 'PrincipalDetails'로 세션 등록
+    @GetMapping("/test/oauth/user")
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        return principalDetails.getUser().toString();
+    }
 
     // 로그인 Form
     @GetMapping("/login")
