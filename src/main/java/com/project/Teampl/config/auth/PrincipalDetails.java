@@ -22,6 +22,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     private User user;
     private Map<String, Object> attributes;
 
+    public PrincipalDetails() { }
+
     // 일반 계정으로 로그인할 때 호출하는 생성자
     public PrincipalDetails(User user) {
         this.user = user;

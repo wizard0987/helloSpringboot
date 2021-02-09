@@ -32,7 +32,7 @@ public class UserController {
     private UserService userService;
 
     //일반 회원 세션 정보 확인
-    @GetMapping("/test/login")
+    @GetMapping("/test/login/user")
     public @ResponseBody String testLogin(Authentication authentication,
                                           @AuthenticationPrincipal PrincipalDetails userDetails) {
         System.out.println("================ /test/login =================");
@@ -41,11 +41,11 @@ public class UserController {
         userDetails = (PrincipalDetails) authentication.getPrincipal();
         System.out.println("authentication : " + userDetails.getUser());
 
-        return userDetails.getUser().toString();
+        return userDetails.toString();
     }
 
     // Oauth 계정 세션 정보 확인
-    @GetMapping("/test/oauth/login")
+    @GetMapping("/test/login/oauth")
     public @ResponseBody String testOauthLogin(Authentication authentication,
                                                @AuthenticationPrincipal OAuth2User oauth) {
         System.out.println("================ /test/oauth/login =================");
@@ -54,14 +54,15 @@ public class UserController {
         System.out.println("authentication : " + oAuth2User.getAttributes());
         System.out.println("oauth2User : " + oauth.getAttributes());
 
-        return oAuth2User.getAttributes().toString();
+        return oAuth2User.toString();
     }
 
     // 일반, OAuth 계정으로 로그인하면 'PrincipalDetails'로 세션 등록
-    @GetMapping("/test/oauth/user")
+    @GetMapping("/test/login/all")
     public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return principalDetails.getUser().toString();
+        return principalDetails.toString();
+//        return principalDetails.getUser().toString();
     }
 
     // 로그인 Form
