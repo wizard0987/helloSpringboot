@@ -29,6 +29,7 @@ public class User {
 
     private String provider;    // oauth 구분을 위한 google, facebook, kakao 등등
     private String providerId;  // 소셜 로그인(oauth)의 토큰 정보로부터 가져온 고유 아이디
+    private String accessToken; // 소셜 로그인(oauth)의 액세스 토큰
     private String role;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime regdate;

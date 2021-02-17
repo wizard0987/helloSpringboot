@@ -4,6 +4,7 @@ import com.project.Teampl.config.auth.PrincipalDetails;
 import com.project.Teampl.config.oauth.provider.*;
 import com.project.Teampl.model.user.User;
 import com.project.Teampl.repository.UserRepository;
+import io.netty.handler.codec.http.HttpResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+
         System.out.println("getClientRegistration : " + userRequest.getClientRegistration());
         System.out.println("getAccessToken : " + userRequest.getAccessToken().getTokenValue());
 //        System.out.println("userRequest : " + super.loadUser(userRequest).getAttributes());
@@ -51,6 +54,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         String provider     = oAuth2UserInfo.getProvider(); // google, facebook, naver 등
         String providerId   = oAuth2UserInfo.getProviderId(); // sub : 128543...(google의 PK)
+        String accessToken  = userRequest.getAccessToken().getTokenValue();
         String username     = oAuth2UserInfo.getName();
         String userid       = provider + "_" + providerId;  // google_128543...(중복 방지를 위해...)
 //        String userpw       = "아이고의미없다";
@@ -72,6 +76,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             findUser = User.builder()
                     .username(username)
                     .userid(userid)
+                    .accessToken(accessToken)
 //                    .userpw(userpw)
                     .email(email)
                     .role(role)

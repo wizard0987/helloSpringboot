@@ -18,11 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
 import javax.validation.Valid;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -35,11 +31,13 @@ public class UserController {
     @GetMapping("/test/login/user")
     public @ResponseBody String testLogin(Authentication authentication,
                                           @AuthenticationPrincipal PrincipalDetails userDetails) {
-        System.out.println("================ /test/login =================");
+        System.out.println("================ /test/login/user =================");
 //        System.out.println("authentication : " + authentication.getPrincipal()); // 암호화 된 패스워드를 제공하지 않는 특징이 있음
+        PrincipalDetails userDetails2 = (PrincipalDetails) authentication.getPrincipal();
 
-        userDetails = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("authentication : " + userDetails.getUser());
+        System.out.println("authentication : " + authentication);
+        System.out.println("userDetails.getUser() : " + userDetails.getUser());
+        System.out.println("userDetails2.getUser() : " + userDetails2.getUser());
 
         return userDetails.toString();
     }
@@ -48,18 +46,27 @@ public class UserController {
     @GetMapping("/test/login/oauth")
     public @ResponseBody String testOauthLogin(Authentication authentication,
                                                @AuthenticationPrincipal OAuth2User oauth) {
-        System.out.println("================ /test/oauth/login =================");
+        System.out.println("================ /test/login/oauth =================");
+        OAuth2User oauth2 = (OAuth2User) authentication.getPrincipal();
 
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        System.out.println("authentication : " + oAuth2User.getAttributes());
-        System.out.println("oauth2User : " + oauth.getAttributes());
+        System.out.println("authentication : " + authentication);
+        System.out.println("oauth.getAttributes() : " + oauth.getAttributes());
+        System.out.println("oauth2.getAttributes() : " + oauth2.getAttributes());
 
-        return oAuth2User.toString();
+        return authentication.toString();
     }
 
     // 일반, OAuth 계정으로 로그인하면 'PrincipalDetails'로 세션 등록
     @GetMapping("/test/login/all")
-    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public @ResponseBody String user(Authentication authentication,
+                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        System.out.println("================ /test/login/all =================");
+
+        PrincipalDetails principalDetails2 = (PrincipalDetails) authentication.getPrincipal();
+
+        System.out.println("authentication : " + authentication);
+        System.out.println("principalDetails.getAttributes() : " + principalDetails.getAttributes());
+        System.out.println("principalDetails2.getAttributes() : " + principalDetails2.getAttributes());
 
         return principalDetails.toString();
 //        return principalDetails.getUser().toString();
@@ -102,12 +109,15 @@ public class UserController {
 
     // 회원 수정 Form
     @GetMapping("/user/myPage")
-    public String myPage(Model model) {
+    public String myPage(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String useridx = authentication.getName();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        System.out.println("authentication : " + authentication);
+//        String useridx = authentication.getName();
+        System.out.println("principalDetails : " + principalDetails);
+        Long useridx = principalDetails.getUser().getIdx();
 
-        User findUser = userService.findById(Long.parseLong(useridx));
+        User findUser = userService.findById(useridx);
         EditUserForm editUserForm = findUser.setEditForm(findUser);
 
         model.addAttribute("editUserForm", editUserForm);
@@ -117,12 +127,11 @@ public class UserController {
 
     // 회원 수정(마이페이지)
     @PostMapping("/user/myPage")
-    public String myPageProc(@Valid EditUserForm editUserForm, BindingResult result) {
+    public String myPageProc(@Valid EditUserForm editUserForm, BindingResult result,
+                             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String useridx = authentication.getName();
-
-        User findUser = userService.findById(Long.parseLong(useridx));
+        Long useridx = principalDetails.getUser().getIdx();
+        User findUser = userService.findById(useridx);
 
         // 아이디 중복검사
         if(!editUserForm.getUserid().equals(findUser.getUserid())) {

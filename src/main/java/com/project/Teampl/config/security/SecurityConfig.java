@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@EnableWebSecurity
+@EnableWebSecurity  // IoC(=스프링 컨테이너)에 Bean 등록 + 시큐리티 필터(Filter)가 등록된다.
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -33,9 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
         .formLogin()
             .loginPage("/login")
+            .loginProcessingUrl("/loginProc")
             .usernameParameter("userid")
             .passwordParameter("userpw")
-            .loginProcessingUrl("/loginProc")
             .defaultSuccessUrl("/tour/all")
             .and()
         .logout()
@@ -44,9 +44,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .and()
         .oauth2Login()
-            .loginPage("/login") // 이 라인(Line) 이후 구글 로그인이 완료된 뒤의 후 처리가 필요.
-            .userInfoEndpoint()
-            .userService(principalOauth2UserService);
+            .loginPage("/login")    // 이 라인(Line) 이후 구글 로그인이 완료된 뒤의 후 처리가 필요.
+            .userInfoEndpoint()     // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당.
+            .userService(principalOauth2UserService);   // 소셜 로그인 성공 시 후속 조치를 진행할 UserService 인터페이스의 구현체 등록
+
 
         // 1. 코드받기(인증),
         // 2. 엑세스토큰(권한),
@@ -54,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 4-1. 그 정보(이메일, 전화번호, 이름, 아이디)를 토대로 회원가입을 자동으로 바로 진행시킬 수도 있고,
         // 4-2. 쇼핑몰일 경우 집주소 정보 요구 / 백화점인 경우 조건에 따라 회원 등급 발급(?)
 
-        // Tip : oauth 라이브러리를 사용하면 좋은점!
+        // Tip : oauth client 라이브러리를 사용하면 좋은점!
         // 추가적인 코드 구현 없이, 엑세스 토큰과 사용자 정보를 한번에 가져올 수 있다!
     }
 
@@ -62,5 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
 
 }
